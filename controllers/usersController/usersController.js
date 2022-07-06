@@ -3,8 +3,8 @@ const { authService } = require('../../service/auth');
 const { HttpStatusCode } = require('../../libs');
 const { repositoryContacts, repositoryUsers } = require('../../repository');
 const { AvatarStorage, CloudinaryStorage } = require('../../service/file-storage');
-const { EmailService, SenderSendgrid } = require('../../service/email');
-// const { EmailService, SenderNodemailer } = require('../../service/email');
+// const { EmailService, SenderSendgrid } = require('../../service/email');
+const { EmailService, SenderNodemailer } = require('../../service/email');
 // const { AvatarStorage, LocalStorage } = require('../../service/file-storage');
 
 class UsersController {
@@ -18,8 +18,8 @@ class UsersController {
       }
 
       const newUser = await authService.createUser(req.body);
-      // const emailService = new EmailService(process.env.NODE_ENV, new SenderNodemailer());
-      const emailService = new EmailService(process.env.NODE_ENV, new SenderSendgrid());
+      const emailService = new EmailService(process.env.NODE_ENV, new SenderNodemailer());
+      // const emailService = new EmailService(process.env.NODE_ENV, new SenderSendgrid());
       const isSend = await emailService.sendVerifyEmail(email, newUser.name, newUser.verificationTokenEmail);
       delete newUser.verificationTokenEmail;
       return res.status(HttpStatusCode.CREATED).json({
@@ -171,8 +171,8 @@ class UsersController {
 
       if (user) {
         const { email, name, verificationTokenEmail } = user;
-        const emailService = new EmailService(process.env.NODE_ENV, new SenderSendgrid());
-        // const emailService = new EmailService(process.env.NODE_ENV, new SenderNodemailer());
+        // const emailService = new EmailService(process.env.NODE_ENV, new SenderSendgrid());
+        const emailService = new EmailService(process.env.NODE_ENV, new SenderNodemailer());
 
         const isSend = await emailService.sendVerifyEmail(email, name, verificationTokenEmail);
 
